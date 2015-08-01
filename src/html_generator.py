@@ -13,17 +13,25 @@ def get_lines():
         for line in lines:
             yield line
 
-def convert_text_to_html():
-    ''' Write the text source into HTML markup '''
+def write_html():
+    ''' Writes the HTML '''
+
+    html = '<!doctype HTML>\n<html>\n<head></head>\n<body>\n' + \
+           str(convert_text_to_html()) + '\n</body>\n</html>'
 
     with open('output.html', 'w') as out:
-        with open(sys.argv[1]) as f:
-            for line in get_lines():
-                pass
+        out.write(html)
+
+def convert_text_to_html():
+    ''' Converts the text source into HTML markup '''
+
+    with open(sys.argv[1]) as f:
+        for line in get_lines():
+            pass
 
 if __name__ == '__main__':
 
     if len(sys.argv) == 1:
         usage()
 
-    convert_text_to_html()
+    write_html()
