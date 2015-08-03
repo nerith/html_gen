@@ -28,11 +28,10 @@ def get_tags():
     for tag in sorted(markup)[::-1]:
         yield tag
 
-def generate_tag(tag, line):
+def generate_tag(line):
     ''' Generate a tag
 
     Parameters:
-      tag: the tag to be generated
       line: the line to generate HTML from
     '''
 
@@ -79,9 +78,7 @@ def convert_text_to_html():
 
     with open(sys.argv[1]) as f:
         for line in get_lines():
-            for key in get_tags():
-                html += generate_tag(key, line)
-                break
+            html += generate_tag(line)
 
     return html
 
