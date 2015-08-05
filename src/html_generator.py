@@ -8,7 +8,8 @@ markup = { 'h1': '^[#]{1}(\s*)',
            'h3': '^[#]{3}(\s*)',
            'h4': '^[#]{4}(\s*)',
            'h5': '^[#]{5}(\s*)',
-           'h6': '^[#]{6}(\s*)'
+           'h6': '^[#]{6}(\s*)',
+           'a': '(\[http(s?):\/{2}.+?(\.com|\.org|\.edu|\.net)\])'
          }
 
 def usage():
@@ -49,13 +50,26 @@ def parse_line(text):
     remaining_text = ''
 
     for key in get_tags():
-        if re.search(markup[key], text):
+        if re.search(markup[key], text) and key != 'a':
             r = re.search(markup[key], text)
             remaining_text = text[r.span()[1]:]
             written_text = ''.join(['<', key, '>', parse_line(remaining_text),
                                    '</', key, '>\n'])
             remaining_text = ''
             break
+        elif re.search(markup['a'], text):
+            rng = re.search(markup['a'], text).span()
+            linkname = text[rng[0] + 1: rng[1] - 1]
+
+            # Check where the link is within the line
+            if rng[0] > 0:
+                written_text = ''.join([text[:rng[0] - 1], " <a href='",
+                                        linkname, "'>", linkname, "</a> "])
+            else:
+                written_text = ''.join(["<a href='", linkname, "'>",
+                                        linkname, "</a> "])
+
+            remaining_text = text[rng[1] + 1:]
 
     if remaining_text == '':
         return written_text

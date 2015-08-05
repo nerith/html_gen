@@ -21,3 +21,14 @@ def test_h5():
 
 def test_h6():
     assert(html.parse_line('###### Header 6') == "<h6>Header 6</h6>\n")
+
+def test_start_link_generation():
+    assert(html.parse_line('[https://www.google.com]') == \
+           "<a href='https://www.google.com'>https://www.google.com</a> ")
+
+    assert(html.parse_line('[https://www.google.com] is a link') == \
+           "<a href='https://www.google.com'>https://www.google.com</a> is a link")
+
+def test_embedded_link_generation():
+    assert(html.parse_line('This is a link -> [https://www.google.com] to Google') == \
+           "This is a link -> <a href='https://www.google.com'>https://www.google.com</a> to Google")
