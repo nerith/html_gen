@@ -6,3 +6,7 @@ text syntax.
 ## Usage
 
 Run `python3 src/html_generator.py [input file]` to generate HTML output.
+
+## Running tests
+
+To run the tests, run `make test`.
