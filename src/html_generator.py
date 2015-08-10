@@ -9,6 +9,7 @@ markup = { 'h1': '^[#]{1}(\s*)',
            'h4': '^[#]{4}(\s*)',
            'h5': '^[#]{5}(\s*)',
            'h6': '^[#]{6}(\s*)',
+           'hr': '^-{3}',
            'a': '(\[http(s?):\/{2}.+?\.(com|org|edu|net)\])'
          }
 
@@ -50,7 +51,10 @@ def parse_line(text):
     remaining_text = ''
 
     for key in get_tags():
-        if re.search(markup[key], text) and key != 'a':
+        if re.search(markup[key], text) and key == 'hr':
+            written_text = '<hr>'
+            break
+        elif re.search(markup[key], text) and key != 'a':
             r = re.search(markup[key], text)
             remaining_text = text[r.span()[1]:]
             written_text = ''.join(['<', key, '>', parse_line(remaining_text),

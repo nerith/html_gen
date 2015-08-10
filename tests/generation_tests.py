@@ -22,6 +22,9 @@ def test_h5():
 def test_h6():
     assert(html.parse_line('###### Header 6') == "<h6>Header 6</h6>\n")
 
+def test_hr():
+    assert(html.parse_line('---') == "<hr>")
+
 def test_start_link_generation():
     assert(html.parse_line('[https://www.google.com]') == \
            "<a href='https://www.google.com'>https://www.google.com</a> ")
