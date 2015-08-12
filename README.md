@@ -3,6 +3,11 @@
 HTML_gen is a HTML generator prototype that generates HTML using Markdown-like
 text syntax.
 
+## Prerequisites
+
+On Debian-based systems:
+`sudo apt install python3 python3-nose`
+
 ## Usage
 
 Run `python3 src/html_generator.py [input file]` to generate HTML output.
