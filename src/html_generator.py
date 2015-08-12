@@ -3,16 +3,6 @@
 import sys
 import re
 
-markup = { 'h1': '^[#]{1}(\s*)',
-           'h2': '^[#]{2}(\s*)',
-           'h3': '^[#]{3}(\s*)',
-           'h4': '^[#]{4}(\s*)',
-           'h5': '^[#]{5}(\s*)',
-           'h6': '^[#]{6}(\s*)',
-           'hr': '^-{3}',
-           'a': '(\[http(s?):\/{2}.+?\.(com|org|edu|net)\])'
-         }
-
 def usage():
     print('usage: html_gen [FILE]')
     sys.exit(1)
@@ -24,61 +14,75 @@ def get_lines():
         for line in lines:
             yield line
 
-def get_tags():
-    ''' Return the available markup symbols '''
+class Parser():
+    def __init__(self):
+        self.written_text = ''
+        self.remaining_text = ''
+        self.markup = { 'h1': '^[#]{1}(\s*)',
+                        'h2': '^[#]{2}(\s*)',
+                        'h3': '^[#]{3}(\s*)',
+                        'h4': '^[#]{4}(\s*)',
+                        'h5': '^[#]{5}(\s*)',
+                        'h6': '^[#]{6}(\s*)',
+                        'hr': '^-{3}',
+                        'a': '(\[http(s?):\/{2}.+?\.(com|org|edu|net)\])'
+                      }
 
-    for tag in sorted(markup)[::-1]:
-        yield tag
+    def get_tags(self):
+        ''' Return the available markup symbols '''
 
-def generate_tag(line):
-    ''' Generate a tag
+        for tag in sorted(self.markup)[::-1]:
+            yield tag
 
-    Parameters:
-      line: the line to generate HTML from
-    '''
+    def generate_tag(self, line):
+        ''' Generate a tag
 
-    return parse_line(line.replace('\n', ''))
+        Parameters:
+          line: the line to generate HTML from
+        '''
 
-def parse_line(text):
-    ''' Parse a line recursively for markup symbols
+        return self.parse_line(line.replace('\n', ''))
 
-    Parameters:
-      text: a textual line
-    Returns: the generated HTML
-    '''
+    def parse_line(self, text):
+        ''' Parse a line recursively for markup symbols
 
-    written_text = text
-    remaining_text = ''
+        Parameters:
+          text: a textual line
+        Returns: the generated HTML
+        '''
 
-    for key in get_tags():
-        if re.search(markup[key], text) and key == 'hr':
-            written_text = '<hr>'
-            break
-        elif re.search(markup[key], text) and key != 'a':
-            r = re.search(markup[key], text)
-            remaining_text = text[r.span()[1]:]
-            written_text = ''.join(['<', key, '>', parse_line(remaining_text),
-                                   '</', key, '>\n'])
-            remaining_text = ''
-            break
-        elif re.search(markup['a'], text):
-            rng = re.search(markup['a'], text).span()
-            linkname = text[rng[0] + 1: rng[1] - 1]
+        self.written_text = text
+        self.remaining_text = ''
 
-            # Check where the link is within the line
-            if rng[0] > 0:
-                written_text = ''.join([text[:rng[0] - 1], " <a href='",
-                                        linkname, "'>", linkname, "</a> "])
-            else:
-                written_text = ''.join(["<a href='", linkname, "'>",
-                                        linkname, "</a> "])
+        for key in self.get_tags():
+            if re.search(self.markup[key], text) and key == 'hr':
+                self.written_text = '<hr>'
+                break
+            elif re.search(self.markup[key], text) and key != 'a':
+                r = re.search(self.markup[key], text)
+                self.remaining_text = text[r.span()[1]:]
+                self.written_text = ''.join(['<', key, '>', self.parse_line(self.remaining_text),
+                                       '</', key, '>\n'])
+                self.remaining_text = ''
+                break
+            elif re.search(self.markup['a'], text):
+                rng = re.search(self.markup['a'], text).span()
+                linkname = text[rng[0] + 1: rng[1] - 1]
 
-            remaining_text = text[rng[1] + 1:]
+                # Check where the link is within the line
+                if rng[0] > 0:
+                    self.written_text = ''.join([text[:rng[0] - 1], " <a href='",
+                                                 linkname, "'>", linkname, "</a> "])
+                else:
+                    self.written_text = ''.join(["<a href='", linkname, "'>",
+                                                 linkname, "</a> "])
 
-    if remaining_text == '':
-        return written_text
+                self.remaining_text = text[rng[1] + 1:]
 
-    return written_text + parse_line(remaining_text)
+        if self.remaining_text == '':
+            return self.written_text
+
+        return self.written_text + self.parse_line(self.remaining_text)
 
 def write_html():
     ''' Writes the HTML '''
@@ -92,11 +96,12 @@ def write_html():
 def convert_text_to_html():
     ''' Converts the text source into HTML markup '''
 
+    parser = Parser()
     html = ''
 
     with open(sys.argv[1]) as f:
         for line in get_lines():
-            html += generate_tag(line)
+            html += parser.generate_tag(line)
 
     return html
 
