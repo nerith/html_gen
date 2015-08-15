@@ -38,3 +38,16 @@ def test_start_link_generation():
 def test_embedded_link_generation():
     assert_equals(parser.parse_line('This is a link -> [https://www.google.com] to Google'),
                   "This is a link -> <a href='https://www.google.com'>https://www.google.com</a> to Google")
+
+def test_paragraph_generation():
+    parser.generate_tag('')
+
+    assert_equals(parser.generate_tag("This is a paragraph"), "<p>This is a paragraph")
+    assert_equals(parser.generate_tag("Second line of the paragraph"), "Second line of the paragraph")
+    assert_equals(parser.generate_tag(''), "</p>\n")
+
+    parser.generate_tag('')
+
+    assert_equals(parser.generate_tag('A line with a link > [https://www.google.com]'),
+                  "<p>A line with a link > <a href='https://www.google.com'>https://www.google.com</a> ")
+    assert_equals(parser.generate_tag(''), "</p>\n")
