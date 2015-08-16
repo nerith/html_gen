@@ -25,7 +25,7 @@ class Parser():
                         'h5': '^[#]{5}(\s*)',
                         'h6': '^[#]{6}(\s*)',
                         'hr': '^-{3}',
-                        'a': '(\[http(s?):\/{2}.+?\.(com|org|edu|net)\])'
+                        'a': '((\[https?:\/{2}.+?\.(com|org|edu|net)\])(\(.+?\)))'
                       }
         self.header = False
         self.in_paragraph = False
@@ -95,18 +95,19 @@ class Parser():
                 self.header = True
                 break
             elif re.search(self.markup['a'], text):
-                rng = re.search(self.markup['a'], text).span()
-                linkname = text[rng[0] + 1: rng[1] - 1]
+                rng = re.search(self.markup['a'], text)
+                linkname = rng.groups()[1].replace('[', '').replace(']', '')
+                link_title = rng.groups()[3].replace('(', '').replace(')', '')
 
                 # Check where the link is within the line
-                if rng[0] > 0:
-                    self.written_text = ''.join([text[:rng[0] - 1], " <a href='",
-                                                 linkname, "'>", linkname, "</a> "])
+                if rng.start(0) > 0:
+                    self.written_text = ''.join([text[:rng.start(0)], "<a href='",
+                                                 linkname, "'>", link_title, "</a>"])
                 else:
                     self.written_text = ''.join(["<a href='", linkname, "'>",
-                                                 linkname, "</a> "])
+                                                 link_title, "</a>"])
 
-                self.remaining_text = text[rng[1] + 1:]
+                self.remaining_text = text[rng.end(len(rng.groups())):]
 
         if self.remaining_text == '':
             return self.written_text

@@ -29,15 +29,15 @@ def test_hr():
     assert_equals(parser.parse_line('---'), "<hr>")
 
 def test_start_link_generation():
-    assert_equals(parser.parse_line('[https://www.google.com]'),
-                  "<a href='https://www.google.com'>https://www.google.com</a> ")
+    assert_equals(parser.parse_line('[https://www.google.com](Google)'),
+                  "<a href='https://www.google.com'>Google</a>")
 
-    assert_equals(parser.parse_line('[https://www.google.com] is a link'),
-                  "<a href='https://www.google.com'>https://www.google.com</a> is a link")
+    assert_equals(parser.parse_line('[https://www.google.com](Google) is a link'),
+                  "<a href='https://www.google.com'>Google</a> is a link")
 
 def test_embedded_link_generation():
-    assert_equals(parser.parse_line('This is a link -> [https://www.google.com] to Google'),
-                  "This is a link -> <a href='https://www.google.com'>https://www.google.com</a> to Google")
+    assert_equals(parser.parse_line('This is a link -> [https://www.google.com](Google) to Google'),
+                  "This is a link -> <a href='https://www.google.com'>Google</a> to Google")
 
 def test_paragraph_generation():
     parser.generate_tag('')
@@ -48,6 +48,6 @@ def test_paragraph_generation():
 
     parser.generate_tag('')
 
-    assert_equals(parser.generate_tag('A line with a link > [https://www.google.com]'),
-                  "<p>A line with a link > <a href='https://www.google.com'>https://www.google.com</a> ")
+    assert_equals(parser.generate_tag('A line with a link > [https://www.google.com](Google)'),
+                  "<p>A line with a link > <a href='https://www.google.com'>Google</a>")
     assert_equals(parser.generate_tag(''), "</p>\n")
