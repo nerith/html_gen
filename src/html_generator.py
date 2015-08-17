@@ -96,15 +96,15 @@ class Parser():
                 break
             elif re.search(self.markup['a'], text):
                 rng = re.search(self.markup['a'], text)
-                linkname = rng.groups()[1].replace('[', '').replace(']', '')
+                link_name = rng.groups()[1].replace('[', '').replace(']', '')
                 link_title = rng.groups()[3].replace('(', '').replace(')', '')
 
                 # Check where the link is within the line
                 if rng.start(0) > 0:
                     self.written_text = ''.join([text[:rng.start(0)], "<a href='",
-                                                 linkname, "'>", link_title, "</a>"])
+                                                 link_name, "'>", link_title, "</a>"])
                 else:
-                    self.written_text = ''.join(["<a href='", linkname, "'>",
+                    self.written_text = ''.join(["<a href='", link_name, "'>",
                                                  link_title, "</a>"])
 
                 self.remaining_text = text[rng.end(len(rng.groups())):]
