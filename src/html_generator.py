@@ -83,31 +83,31 @@ class Parser():
         self.remaining_text = ''
 
         for key in self.get_tags():
-            if re.search(self.markup[key], text) and key == 'hr':
-                self.written_text = '<hr>'
-                break
-            elif re.search(self.markup[key], text) and key != 'a':
-                r = re.search(self.markup[key], text)
-                self.remaining_text = text[r.span()[1]:]
-                self.written_text = ''.join(['<', key, '>', self.parse_line(self.remaining_text),
-                                       '</', key, '>\n'])
-                self.remaining_text = ''
-                self.header = True
-                break
-            elif re.search(self.markup['a'], text):
-                rng = re.search(self.markup['a'], text)
-                link_name = rng.groups()[1].replace('[', '').replace(']', '')
-                link_title = rng.groups()[3].replace('(', '').replace(')', '')
+            match = re.search(self.markup[key], text)
 
-                # Check where the link is within the line
-                if rng.start(0) > 0:
-                    self.written_text = ''.join([text[:rng.start(0)], "<a href='",
-                                                 link_name, "'>", link_title, "</a>"])
-                else:
-                    self.written_text = ''.join(["<a href='", link_name, "'>",
-                                                 link_title, "</a>"])
+            if match:
+                if key == 'hr':
+                    self.written_text = '<hr>'
+                elif key != 'a':
+                    self.remaining_text = text[match.span()[1]:]
+                    self.written_text = ''.join(['<', key, '>', self.parse_line(self.remaining_text),
+                                                 '</', key, '>\n'])
+                    self.header = True
+                elif key == 'a':
+                    link_name = match.groups()[1].replace('[', '').replace(']', '')
+                    link_title = match.groups()[3].replace('(', '').replace(')', '')
 
-                self.remaining_text = text[rng.end(len(rng.groups())):]
+                    # Check where the link is within the line
+                    if match.start(0) > 0:
+                        self.written_text = ''.join([text[:match.start(0)], "<a href='",
+                                                     link_name, "'>", link_title, "</a>"])
+                    else:
+                        self.written_text = ''.join(["<a href='", link_name, "'>",
+                                                     link_title, "</a>"])
+
+                    self.remaining_text = text[match.end(len(match.groups())):]
+
+                break
 
         if self.remaining_text == '':
             return self.written_text
