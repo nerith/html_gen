@@ -1,7 +1,7 @@
 # HTML_gen
 
 HTML_gen is a HTML generator prototype that generates HTML using Markdown-like
-text syntax.
+text syntax. HTML_gen can currently generate headers, links, and paragraphs.
 
 ## Prerequisites
 
