@@ -25,7 +25,8 @@ class Parser():
                         'h5': '^[#]{5}(\s*)',
                         'h6': '^[#]{6}(\s*)',
                         'hr': '^-{3}',
-                        'a': '((\[https?:\/{2}.+?\.(com|org|edu|net)\])(\(.+?\)))'
+                        'a': '((\[https?:\/{2}.+?\.(com|org|edu|net)\])(\(.+?\)))',
+                        'b': '(\*\*).+?(\*\*)'
                       }
         self.header = False
         self.in_paragraph = False
@@ -88,6 +89,15 @@ class Parser():
             if match:
                 if key == 'hr':
                     self.written_text = '<hr>'
+                elif key == 'b':
+                    bolded_text = ''.join(["<", key, ">", text[match.end(1):match.start(2)], "</", key, ">"])
+
+                    if match.start(0) > 0:
+                        self.written_text = text[:match.start(0)] + bolded_text
+                    else:
+                        self.written_text = bolded_text
+
+                    self.remaining_text = text[match.end(len(match.groups())):]
                 elif key != 'a':
                     self.remaining_text = text[match.span()[1]:]
                     self.written_text = ''.join(['<', key, '>', self.parse_line(self.remaining_text),
