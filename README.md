@@ -17,4 +17,5 @@ called `output.html`.
 
 ## Running tests
 
+Tests are stored in the tests directory and depend on Python nose to run.
 To run the tests, run `make test`.
