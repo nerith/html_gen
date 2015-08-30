@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+from parser import Parser
 
 def usage():
     print('usage: html_gen [FILE]')
