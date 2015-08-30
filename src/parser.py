@@ -1,6 +1,6 @@
 import re
 
-class Parser():
+class Parser:
     ''' The Parser class represents a parser that parses text using specified
     markup. Once the parser parses the text, HTML is generated as output.
     '''
