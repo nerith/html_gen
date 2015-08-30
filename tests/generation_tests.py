@@ -3,7 +3,7 @@
 # Test HTML generation
 
 from nose.tools import assert_equals
-from html_generator import Parser
+from src.parser import Parser
 
 parser = Parser()
 
