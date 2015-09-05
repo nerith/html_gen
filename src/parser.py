@@ -16,7 +16,8 @@ class Parser:
                         'h6': '^[#]{6}(\s*)',
                         'hr': '^-{3}',
                         'a': '((\[https?:\/{2}.+?\.(com|org|edu|net)\])(\(.+?\)))',
-                        'b': '(\*).+?(\*)'
+                        'b': '(\*).+?(\*)',
+                        'i': '(\*\*).+?(\*\*)'
                       }
         self.header = False
         self.in_paragraph = False
@@ -79,7 +80,7 @@ class Parser:
             if match:
                 if key == 'hr':
                     self.written_text = '<hr>'
-                elif key == 'b':
+                elif key == 'b' or key == 'i':
                     bolded_text = ''.join(["<", key, ">", text[match.end(1):match.start(2)], "</", key, ">"])
 
                     if match.start(0) > 0:

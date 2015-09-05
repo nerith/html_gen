@@ -60,3 +60,12 @@ def test_bold_text_generation():
 
     assert_equals(parser.parse_line("A *line* with more *bold* text."),
                                     "A <b>line</b> with more <b>bold</b> text.")
+
+def test_italic_text_generation():
+    assert_equals(parser.parse_line("A line with **italic** text."),
+                                    "A line with <i>italic</i> text.")
+
+    assert_equals(parser.parse_line("**Italic text**"), "<i>Italic text</i>")
+
+    assert_equals(parser.parse_line("A **line** with more **italic** text."),
+                                    "A <i>line</i> with more <i>italic</i> text.")
