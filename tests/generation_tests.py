@@ -53,10 +53,10 @@ def test_paragraph_generation():
     assert_equals(parser.generate_tag(''), "</p>\n")
 
 def test_bold_text_generation():
-    assert_equals(parser.parse_line("A line with **bold** text."),
+    assert_equals(parser.parse_line("A line with *bold* text."),
                                     "A line with <b>bold</b> text.")
 
-    assert_equals(parser.parse_line("**Bold text**"), "<b>Bold text</b>")
+    assert_equals(parser.parse_line("*Bold text*"), "<b>Bold text</b>")
 
-    assert_equals(parser.parse_line("A **line** with more **bold** text."),
+    assert_equals(parser.parse_line("A *line* with more *bold* text."),
                                     "A <b>line</b> with more <b>bold</b> text.")

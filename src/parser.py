@@ -16,7 +16,7 @@ class Parser:
                         'h6': '^[#]{6}(\s*)',
                         'hr': '^-{3}',
                         'a': '((\[https?:\/{2}.+?\.(com|org|edu|net)\])(\(.+?\)))',
-                        'b': '(\*\*).+?(\*\*)'
+                        'b': '(\*).+?(\*)'
                       }
         self.header = False
         self.in_paragraph = False
