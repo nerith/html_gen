@@ -10,7 +10,39 @@ On Debian-based systems:
 
 ## Usage
 
-Run `python3 src/html_generator.py [input file]` to generate HTML output.
+HTML_gen uses a Markdown-like syntax in source files to generate HTML output.
+
+Currently, the following syntax is available:
+
+```
+# text (for h1 tag)
+## text (for h2 tag)
+### text (for h3 tag)
+up to h6...
+
+[link url](link text) to generate a link.
+
+--- for hr tag
+*text* for italic text
+**text** for bold-faced text
+```
+
+Additionally, the source file can be separated with whitespace to generate
+paragraphs.
+
+```
+line1
+line2
+
+line3
+line4
+```
+
+This will produce one paragraph consisting of line1 and line2 and another
+paragraph consisting of line3 and line4.
+
+Once a source file is available, run `python3 src/html_generator.py [input file]`
+to generate HTML output.
 
 Once the program is done running, the output will be in a default file
 called `output.html`.
