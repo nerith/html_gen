@@ -69,3 +69,11 @@ def test_italic_text_generation():
 
     assert_equals(parser.parse_line("A **line** with more **italic** text."),
                                     "A <i>line</i> with more <i>italic</i> text.")
+
+def test_lists():
+    assert_equals(parser.parse_line("* A list item"), "<ul><li>A list item</li>")
+    assert_equals(parser.parse_line("* [http://www.google.com](Google)"),
+                                    "<li><a href='http://www.google.com'>Google</a></li>")
+
+    assert_equals(parser.parse_line("* *A bold item*"), "<li><b>A bold item</b></li>")
+    assert_equals(parser.parse_line("* **An italic item**"), "<li><i>An italic item</i></li>")

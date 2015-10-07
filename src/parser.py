@@ -17,9 +17,11 @@ class Parser:
                         'hr': '^-{3}',
                         'a': '((\[https?:\/{2}.+?\.(\w+)\])(\(.+?\)))',
                         'b': '(\*).+?(\*)',
-                        'i': '(\*\*).+?(\*\*)'
+                        'i': '(\*\*).+?(\*\*)',
+                        'li': '^\*\s{1}',
                       }
         self.header = False
+        self.lists = False
         self.in_paragraph = False
         self.previous_line = None
 
@@ -38,10 +40,19 @@ class Parser:
 
         if self.previous_line == '' and text != '' and not self.header:
             self.in_paragraph = True
-            return_text = "<p>" + text
+            if not self.lists:
+                return_text = "<p>" + text
+            else:
+                return_text = text
         elif self.previous_line != '' and text == '' and self.in_paragraph:
             self.in_paragraph = False
-            return_text = "</p>\n"
+            return_text = ""
+
+            if self.lists:
+                return_text = "\n</ul>"
+
+            else:
+                return_text += "</p>\n"
         else:
             return_text = text
 
@@ -89,6 +100,15 @@ class Parser:
                         self.written_text = bolded_text
 
                     self.remaining_text = text[match.end(len(match.groups())):]
+                elif key == 'li':
+                    if not self.lists:
+                        self.lists = True
+                        some_text = "<ul>"
+                    else:
+                        some_text = ""
+
+                    self.remaining_text = text[2:]
+                    self.written_text = some_text + ''.join(["<", key, ">", self.parse_line(self.remaining_text), "</", key ,">"])
                 elif key != 'a':
                     self.remaining_text = text[match.span()[1]:]
                     self.written_text = ''.join(['<', key, '>', self.parse_line(self.remaining_text),
