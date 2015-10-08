@@ -25,6 +25,8 @@ up to h6...
 --- for hr tag
 *text* for italic text
 **text** for bold-faced text
+
+* text for a list item
 ```
 
 Additionally, the source file can be separated with whitespace to generate
