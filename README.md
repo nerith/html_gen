@@ -44,7 +44,7 @@ line4
 This will produce one paragraph consisting of line1 and line2 and another
 paragraph consisting of line3 and line4.
 
-Once a source file is available, run `python3 src/html_generator.py [input file]`
+Once a source file is available, run `python3 scribe/html_generator.py [input file]`
 to generate HTML output.
 
 Once the program is done running, the output will be in a default file
