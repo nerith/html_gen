@@ -1,7 +1,7 @@
-# HTML_gen
+# Scribe
 
-HTML_gen is a HTML generator prototype that generates HTML using Markdown-like
-text syntax. HTML_gen can currently generate headers, links, paragraphs, and
+Scribe is a HTML generator prototype that generates HTML using Markdown-like
+text syntax. Scribe can currently generate headers, links, paragraphs, and
 lists.
 
 ## Prerequisites
@@ -11,7 +11,7 @@ On Debian-based systems:
 
 ## Usage
 
-HTML_gen uses a Markdown-like syntax in source files to generate HTML output.
+Scribe uses a Markdown-like syntax in source files to generate HTML output.
 
 Currently, the following syntax is available:
 
