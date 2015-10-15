@@ -4,7 +4,7 @@ import sys
 from parser import Parser
 
 def usage():
-    print('usage: html_gen [FILE]')
+    print('usage: html_gen [FILE] OPTIONS')
     sys.exit(1)
 
 def get_lines():
