@@ -20,6 +20,7 @@ class Parser:
                         'i': '(\*\*).+?(\*\*)',
                         'li': '^\*\s{1}',
                       }
+
         self.header = False
         self.lists = False
         self.in_paragraph = False
@@ -52,7 +53,7 @@ class Parser:
                 return_text = "\n</ul>"
 
             else:
-                return_text += "</p>\n"
+                return_text = "</p>\n"
         else:
             return_text = text
 
@@ -69,8 +70,7 @@ class Parser:
 
         self.header = False
 
-        text = self.parse_line(line.replace('\n', ''))
-        text = self.generate_paragraph(text)
+        text = self.generate_paragraph(self.parse_line(line.replace('\n', '')))
 
         return text
 
@@ -89,15 +89,17 @@ class Parser:
             match = re.search(self.markup[key], text)
 
             if match:
+                start = match.start(0)
+
                 if key == 'hr':
                     self.written_text = '<hr>'
                 elif key == 'b' or key == 'i':
-                    bolded_text = ''.join(["<", key, ">", text[match.end(1):match.start(2)], "</", key, ">"])
+                    inner_text = "<{}>{}</{}>".format(key, text[match.end(1):match.start(2)], key)
 
-                    if match.start(0) > 0:
-                        self.written_text = text[:match.start(0)] + bolded_text
+                    if start > 0:
+                        self.written_text = text[:start] + inner_text
                     else:
-                        self.written_text = bolded_text
+                        self.written_text = inner_text
 
                     self.remaining_text = text[match.end(len(match.groups())):]
                 elif key == 'li':
@@ -108,23 +110,23 @@ class Parser:
                         some_text = ""
 
                     self.remaining_text = text[2:]
-                    self.written_text = some_text + ''.join(["<", key, ">", self.parse_line(self.remaining_text), "</", key ,">"])
+                    self.written_text = "{}<{}>{}</{}>".format(some_text, key, self.parse_line(self.remaining_text), key)
                 elif key != 'a':
                     self.remaining_text = text[match.span()[1]:]
-                    self.written_text = ''.join(['<', key, '>', self.parse_line(self.remaining_text),
-                                                 '</', key, '>\n'])
+                    self.written_text = "<{}>{}</{}>\n".format(key, self.parse_line(self.remaining_text), key)
+
                     self.header = True
                 elif key == 'a':
                     link_name = match.groups()[1].replace('[', '').replace(']', '')
                     link_title = match.groups()[3].replace('(', '').replace(')', '')
 
+                    link = "<a href='{}'>{}</a>"
+
                     # Check where the link is within the line
                     if match.start(0) > 0:
-                        self.written_text = ''.join([text[:match.start(0)], "<a href='",
-                                                     link_name, "'>", link_title, "</a>"])
+                        self.written_text = text[:start] + link.format(link_name, link_title)
                     else:
-                        self.written_text = ''.join(["<a href='", link_name, "'>",
-                                                     link_title, "</a>"])
+                        self.written_text = link.format(link_name, link_title)
 
                     self.remaining_text = text[match.end(len(match.groups())):]
 
